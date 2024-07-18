@@ -9,7 +9,7 @@ const page = ref(1);
 const pageRangeList = ref([10, 20]);
 const pageRange = ref(pageRangeList.value[0]);
 const pageCount = computed(() => {
-  return parseInt(bikeList.value.length / pageRange.value) + 1;
+  return parseInt(filterList.value.length / pageRange.value) + 1;
 });
 
 const rentSort = ref(null);
@@ -101,6 +101,7 @@ watch(
 watch(
   () => address.value,
   () => {
+    page.value = 1;
     let addText = address.value.trim();
     filterList.value = bikeList.value.filter((station) => station.ar.includes(addText));
   },
