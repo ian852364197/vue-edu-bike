@@ -37,20 +37,42 @@ const returnIcon = computed(() => {
   }
 });
 
+const filterList = ref([]);
+
 const showList = computed(() => {
   let first = (page.value - 1) * pageRange.value;
   let last = page.value * pageRange.value;
-  return bikeList.value.slice(first, last);
+  return filterList.value.slice(first, last);
 });
 
 function sortByRent() {
   returnSort.value = null;
-  rentSort.value = rentSort.value === 'desc' ? 'asc' : 'desc';
+  if (rentSort.value === 'desc') {
+    rentSort.value = 'asc';
+    filterList.value = filterList.value.sort((a, b) => {
+      return a.available_rent_bikes - b.available_rent_bikes;
+    });
+  } else {
+    rentSort.value = 'desc';
+    filterList.value = filterList.value.sort((a, b) => {
+      return a.available_rent_bikes * -1 - b.available_rent_bikes * -1;
+    });
+  }
 }
 
 function sortByReturn() {
   rentSort.value = null;
-  returnSort.value = returnSort.value === 'desc' ? 'asc' : 'desc';
+  if (returnSort.value === 'desc') {
+    returnSort.value = 'asc';
+    filterList.value = filterList.value.sort((a, b) => {
+      return a.available_return_bikes - b.available_return_bikes;
+    });
+  } else {
+    returnSort.value = 'desc';
+    filterList.value = filterList.value.sort((a, b) => {
+      return a.available_return_bikes * -1 - b.available_return_bikes * -1;
+    });
+  }
 }
 
 onMounted(async () => {
@@ -59,6 +81,7 @@ onMounted(async () => {
   );
   test.json().then((value) => {
     bikeList.value = value;
+    filterList.value = value;
   });
 });
 
