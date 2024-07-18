@@ -15,27 +15,16 @@ const pageCount = computed(() => {
 const rentSort = ref(null);
 const returnSort = ref(null);
 
-const rentIcon = computed(() => {
-  if (!rentSort.value) {
-    return '△';
-  }
-  if (rentSort.value === 'desc') {
-    return '▲';
-  } else {
-    return '▼';
-  }
-});
+const rentIcon = computed(() => compIcon(rentSort));
 
-const returnIcon = computed(() => {
-  if (!returnSort.value) {
+const returnIcon = computed(() => compIcon(returnSort));
+
+function compIcon(sortBy) {
+  if (!sortBy.value) {
     return '△';
   }
-  if (returnSort.value === 'desc') {
-    return '▲';
-  } else {
-    return '▼';
-  }
-});
+  return sortBy.value === 'desc' ? '▲' : '▼';
+}
 
 const address = ref('');
 
@@ -102,6 +91,8 @@ watch(
   () => address.value,
   () => {
     page.value = 1;
+    rentSort.value = null;
+    returnSort.value = null;
     let addText = address.value.trim();
     filterList.value = bikeList.value.filter((station) => station.ar.includes(addText));
   },
@@ -158,7 +149,7 @@ watch(
       <Paginate
         v-model="page"
         :page-count="pageCount"
-        :page-range="3"
+        :page-range="5"
         :margin-pages="5"
         :prev-text="'<<'"
         :next-text="'>>'"
