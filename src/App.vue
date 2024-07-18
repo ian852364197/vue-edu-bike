@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Paginate from 'vuejs-paginate-next';
 
 const bikeList = ref([]);
@@ -26,6 +26,15 @@ onMounted(async () => {
     bikeList.value = value;
   });
 });
+
+watch(
+  () => pageRange.value,
+  () => {
+    let now = pageRange.value === 10 ? page.value * 2 : parseInt(page.value / 2);
+    page.value = now;
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
