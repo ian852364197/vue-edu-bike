@@ -12,11 +12,46 @@ const pageCount = computed(() => {
   return parseInt(bikeList.value.length / pageRange.value) + 1;
 });
 
+const rentSort = ref(null);
+const returnSort = ref(null);
+
+const rentIcon = computed(() => {
+  if (!rentSort.value) {
+    return '△';
+  }
+  if (rentSort.value === 'desc') {
+    return '▲';
+  } else {
+    return '▼';
+  }
+});
+
+const returnIcon = computed(() => {
+  if (!returnSort.value) {
+    return '△';
+  }
+  if (returnSort.value === 'desc') {
+    return '▲';
+  } else {
+    return '▼';
+  }
+});
+
 const showList = computed(() => {
   let first = (page.value - 1) * pageRange.value;
   let last = page.value * pageRange.value;
   return bikeList.value.slice(first, last);
 });
+
+function sortByRent() {
+  returnSort.value = null;
+  rentSort.value = rentSort.value === 'desc' ? 'asc' : 'desc';
+}
+
+function sortByReturn() {
+  rentSort.value = null;
+  returnSort.value = returnSort.value === 'desc' ? 'asc' : 'desc';
+}
 
 onMounted(async () => {
   const test = await fetch(
@@ -47,10 +82,10 @@ watch(
         <th scope="col">站點所在區域</th>
         <th scope="col">站點地址</th>
         <th scope="col">總車位數量</th>
-        <th scope="col">可租借的腳踏車數量</th>
+        <th scope="col" @click="sortByRent">可租借的腳踏車數量 {{ rentIcon }}</th>
         <th scope="col">站點緯度</th>
         <th scope="col">站點經度</th>
-        <th scope="col">可歸還的腳踏車數量</th>
+        <th scope="col" @click="sortByReturn">可歸還的腳踏車數量 {{ returnIcon }}</th>
       </tr>
     </thead>
     <tbody>
