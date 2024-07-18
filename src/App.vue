@@ -13,11 +13,11 @@ const pageCount = computed(() => {
 });
 
 const rentSort = ref(null);
-const returnSort = ref(null);
+const totalSort = ref(null);
 
 const rentIcon = computed(() => compIcon(rentSort));
 
-const returnIcon = computed(() => compIcon(returnSort));
+const returnIcon = computed(() => compIcon(totalSort));
 
 function compIcon(sortBy) {
   if (!sortBy.value) {
@@ -37,7 +37,7 @@ const showList = computed(() => {
 });
 
 function sortByRent() {
-  returnSort.value = null;
+  totalSort.value = null;
   if (rentSort.value === 'desc') {
     rentSort.value = 'asc';
     filterList.value = filterList.value.sort((a, b) => {
@@ -51,17 +51,17 @@ function sortByRent() {
   }
 }
 
-function sortByReturn() {
+function sortByTotal() {
   rentSort.value = null;
-  if (returnSort.value === 'desc') {
-    returnSort.value = 'asc';
+  if (totalSort.value === 'desc') {
+    totalSort.value = 'asc';
     filterList.value = filterList.value.sort((a, b) => {
-      return a.available_return_bikes - b.available_return_bikes;
+      return a.total - b.total;
     });
   } else {
-    returnSort.value = 'desc';
+    totalSort.value = 'desc';
     filterList.value = filterList.value.sort((a, b) => {
-      return a.available_return_bikes * -1 - b.available_return_bikes * -1;
+      return a.total * -1 - b.total * -1;
     });
   }
 }
@@ -92,7 +92,7 @@ watch(
   () => {
     page.value = 1;
     rentSort.value = null;
-    returnSort.value = null;
+    totalSort.value = null;
     let addText = address.value.trim();
     filterList.value = bikeList.value.filter((station) => station.ar.includes(addText));
   },
@@ -124,11 +124,11 @@ watch(
           <th scope="col" class="td">站點名稱</th>
           <th scope="col" class="td">站點所在區域</th>
           <th scope="col" class="td">站點地址</th>
-          <th scope="col" class="td">總車位數量</th>
+          <th scope="col" class="td" @click="sortByTotal">總車位數量 {{ returnIcon }}</th>
           <th scope="col" class="td" @click="sortByRent">可租借的腳踏車數量 {{ rentIcon }}</th>
           <th scope="col" class="td">站點緯度</th>
           <th scope="col" class="td">站點經度</th>
-          <th scope="col" class="td" @click="sortByReturn">可歸還的腳踏車數量 {{ returnIcon }}</th>
+          <th scope="col" class="td">可歸還的腳踏車數量</th>
         </tr>
       </thead>
       <tbody>
