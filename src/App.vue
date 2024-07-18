@@ -4,12 +4,18 @@ import Paginate from 'vuejs-paginate-next';
 
 const bikeList = ref([]);
 
-const page = ref();
+const page = ref(1);
 
 const pageRangeList = ref([10, 20]);
 const pageRange = ref(pageRangeList.value[0]);
 const pageCount = computed(() => {
   return parseInt(bikeList.value.length / pageRange.value) + 1;
+});
+
+const showList = computed(() => {
+  let first = (page.value - 1) * pageRange.value;
+  let last = page.value * pageRange.value;
+  return bikeList.value.slice(first, last);
 });
 
 onMounted(async () => {
@@ -18,7 +24,6 @@ onMounted(async () => {
   );
   test.json().then((value) => {
     bikeList.value = value;
-    console.log(bikeList.value[0]);
   });
 });
 </script>
@@ -40,7 +45,7 @@ onMounted(async () => {
       </tr>
     </thead>
     <tbody>
-      <!-- <tr v-for="station in bikeList" :key="station.sno">
+      <tr v-for="station in showList" :key="station.sno">
         <th scope="row">{{ station.sno }}</th>
         <td>{{ station.sna }}</td>
         <td>{{ station.sarea }}</td>
@@ -50,7 +55,7 @@ onMounted(async () => {
         <td>{{ station.latitude }}</td>
         <td>{{ station.longitude }}</td>
         <td>{{ station.available_return_bikes }}</td>
-      </tr> -->
+      </tr>
     </tbody>
   </table>
   <Paginate
