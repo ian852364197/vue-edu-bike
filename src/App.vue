@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import Paginate from 'vuejs-paginate-next';
 
 //API取得的資料
 const bikeList = ref([]);
@@ -69,6 +68,10 @@ function sortByTotal() {
   }
 }
 
+function goToPage(n) {
+  page.value = n;
+}
+
 //call api取得資料
 onMounted(async () => {
   const response = await fetch(
@@ -98,8 +101,7 @@ watch(
     page.value = 1;
     rentSort.value = null;
     totalSort.value = null;
-    let addText = address.value.trim();
-    filterList.value = bikeList.value.filter((station) => station.ar.includes(addText));
+    filterList.value = bikeList.value.filter((station) => station.ar.includes(address.value));
   },
   { immediate: true }
 );
@@ -116,7 +118,7 @@ watch(
             type="search"
             placeholder="輸入站點地址"
             aria-label="Search"
-            v-model="address"
+            v-model.trim="address"
           />
           <button class="btn btn-outline-success" type="button">Search</button>
         </div>
@@ -151,18 +153,62 @@ watch(
       </tbody>
     </table>
     <div class="d-flex justify-content-evenly">
-      <Paginate
-        v-model="page"
-        :page-count="pageCount"
-        :page-range="5"
-        :margin-pages="5"
-        :prev-text="'<<'"
-        :next-text="'>>'"
-        :container-class="'pagination'"
-        :page-class="'page-item'"
-        :first-last-button="true"
-      >
-      </Paginate>
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item">
+            <button @click="page = 1" class="page-link" :disabled="page === 1">First</button>
+          </li>
+          <li class="page-item">
+            <button @click="page -= 1" class="page-link" :disabled="page === 1">&lt;&lt;</button>
+          </li>
+          <template v-if="pageCount < 10">
+            <li v-for="n in pageCount" :key="n" :class="{ 'page-item': true, active: page === n }">
+              <button @click="goToPage(n)" class="page-link">
+                {{ n }}
+              </button>
+            </li>
+          </template>
+          <template v-else-if="page <= 5">
+            <li v-for="n in 10" :key="n" :class="{ 'page-item': true, active: page === n }">
+              <button @click="goToPage(n)" class="page-link">
+                {{ n }}
+              </button>
+            </li>
+          </template>
+          <template v-else-if="page >= pageCount - 5">
+            <li
+              v-for="n in 10"
+              :key="n"
+              :class="{ 'page-item': true, active: page === pageCount - 10 + n }"
+            >
+              <button @click="goToPage(pageCount - 10 + n)" class="page-link">
+                {{ pageCount - 10 + n }}
+              </button>
+            </li>
+          </template>
+          <template v-else>
+            <li
+              v-for="n in 10"
+              :key="n"
+              :class="{ 'page-item': true, active: page === page - 5 + n }"
+            >
+              <button @click="goToPage(page - 5 + n)" class="page-link">
+                {{ page - 5 + n }}
+              </button>
+            </li>
+          </template>
+          <li class="page-item">
+            <button @click="page += 1" class="page-link" :disabled="page === pageCount">
+              &gt;&gt;
+            </button>
+          </li>
+          <li class="page-item">
+            <button @click="page = pageCount" class="page-link" :disabled="page === pageCount">
+              Last
+            </button>
+          </li>
+        </ul>
+      </nav>
       <div>
         <label for="range-select">顯示</label>
         <select v-model="pageRange" id="range-select">
