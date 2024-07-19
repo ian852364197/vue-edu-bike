@@ -64,20 +64,19 @@ function sortByTotal() {
   } else {
     totalSort.value = 'desc';
     filterList.value = filterList.value.sort((a, b) => {
-      return a.total * -1 - b.total * -1;
+      return b.total - a.total;
     });
   }
 }
 
 //call api取得資料
 onMounted(async () => {
-  const test = await fetch(
+  const response = await fetch(
     'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json'
   );
-  test.json().then((value) => {
-    bikeList.value = value;
-    filterList.value = value;
-  });
+  const data = await response.json();
+  bikeList.value = data;
+  filterList.value = data;
 });
 
 //選擇一頁顯示幾筆
