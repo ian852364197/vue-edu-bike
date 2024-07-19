@@ -69,6 +69,7 @@ function sortByTotal() {
   }
 }
 
+//換頁方法
 function goToPage(n) {
   page.value = n;
 }
@@ -169,14 +170,14 @@ watch(
             <button @click="page -= 1" class="page-link" :disabled="page === 1">&lt;&lt;</button>
           </li>
           <template v-if="pageCount < 10">
-            <li v-for="n in pageCount" :key="n" :class="{ 'page-item': true, active: page === n }">
+            <li v-for="n in pageCount" :key="n" class="page-item" :class="{ active: page === n }">
               <button @click="goToPage(n)" class="page-link">
                 {{ n }}
               </button>
             </li>
           </template>
           <template v-else-if="page <= 5">
-            <li v-for="n in 10" :key="n" :class="{ 'page-item': true, active: page === n }">
+            <li v-for="n in 10" :key="n" class="page-item" :class="{ active: page === n }">
               <button @click="goToPage(n)" class="page-link">
                 {{ n }}
               </button>
@@ -186,7 +187,8 @@ watch(
             <li
               v-for="n in 10"
               :key="n"
-              :class="{ 'page-item': true, active: page === pageCount - 10 + n }"
+              class="page-item"
+              :class="{ active: page === pageCount - 10 + n }"
             >
               <button @click="goToPage(pageCount - 10 + n)" class="page-link">
                 {{ pageCount - 10 + n }}
@@ -197,7 +199,8 @@ watch(
             <li
               v-for="n in 10"
               :key="n"
-              :class="{ 'page-item': true, active: page === page - 5 + n }"
+              class="page-item"
+              :class="{ active: page === page - 5 + n }"
             >
               <button @click="goToPage(page - 5 + n)" class="page-link">
                 {{ page - 5 + n }}
