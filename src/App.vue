@@ -20,6 +20,7 @@ const totalIcon = computed(() => compIcon(totalSort));
 
 //搜尋用
 const address = ref('');
+const searchFlag = ref(false);
 
 //經過搜尋or排序的資料
 const filterList = ref([]);
@@ -102,6 +103,7 @@ watch(
     rentSort.value = null;
     totalSort.value = null;
     filterList.value = bikeList.value.filter((station) => station.ar.includes(address.value));
+    searchFlag.value = address.value ? true : false;
   },
   { immediate: true }
 );
@@ -143,7 +145,12 @@ watch(
           <th scope="row">{{ station.sno }}</th>
           <td>{{ station.sna }}</td>
           <td>{{ station.sarea }}</td>
-          <td>{{ station.ar }}</td>
+          <td v-if="!searchFlag">{{ station.ar }}</td>
+          <td v-else>
+            {{ station.ar.substring(0, station.ar.indexOf(address))
+            }}<span class="text-danger">{{ address }}</span
+            >{{ station.ar.substring(station.ar.indexOf(address) + address.length) }}
+          </td>
           <td>{{ station.total }}</td>
           <td>{{ station.available_rent_bikes }}</td>
           <td>{{ station.latitude }}</td>
